@@ -1,9 +1,12 @@
 package vampirewargamejt.modelo.usuarios;
 
+import java.time.LocalDateTime;
+
 public class Usuario {
 
     private final String nombre;
-    private final String clave;
+    private String clave;
+    private final LocalDateTime fechaCreacion = LocalDateTime.now();
 
     private int puntos;
     private boolean activo;
@@ -12,15 +15,17 @@ public class Usuario {
         this.nombre = nombre;
         this.clave = clave;
         this.puntos = 0;
-        this.activo = false;
+        this.activo = true;
     }
 
-    public void activar() { activo = true; }
     public void desactivar() { activo = false; }
     public void sumarPuntos(int puntos) { this.puntos += puntos; }
+
+    public void setClave(String nuevaClave) { this.clave = nuevaClave; }
 
     public String getNombre() { return nombre; }
     public String getClave() { return clave; }
     public int getPuntos() { return puntos; }
     public boolean isActivo() { return activo; }
+    public LocalDateTime getFechaCreacion() { return fechaCreacion; }
 }
