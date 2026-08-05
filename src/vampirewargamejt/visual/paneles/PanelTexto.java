@@ -5,13 +5,17 @@ import vampirewargamejt.visual.GestorPaneles;
 import javax.swing.*;
 import java.awt.*;
 
-public class PanelInicio extends PanelAbstracto {
+public class PanelTexto extends PanelAbstracto {
 
     private JPanel menuPanel;
     private JPanel botonesPanel;
+    private Runnable accionAceptar;
+    private JLabel texto;
 
-    public PanelInicio(GestorPaneles gestorPaneles) {
+    public PanelTexto(GestorPaneles gestorPaneles, String texto, Runnable accionAceptar) {
         super(gestorPaneles);
+        this.accionAceptar = accionAceptar;
+        this.texto = agregarLabel(texto);
     }
 
     @Override
@@ -20,24 +24,19 @@ public class PanelInicio extends PanelAbstracto {
         prepararBotones();
         prepararMenu();
         contenidoPanel.add(menuPanel);
-        add(contenidoPanel, BorderLayout.CENTER);
+        add(contenidoPanel);
     }
 
     private void prepararMenu() {
         menuPanel = agregarPanel(1);
-        menuPanel.add(agregarTitulo("Vampire Wargame"));
+        menuPanel.add(texto);
         menuPanel.add(Box.createVerticalStrut(40));
         menuPanel.add(botonesPanel);
     }
 
     private void prepararBotones() {
-        botonesPanel = new JPanel(new GridLayout(0, 1, 0, 12));
+        botonesPanel = agregarPanel(new GridLayout(1, 1, 12, 12));
         botonesPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        botonesPanel.setOpaque(false);
-
-        botonesPanel.add(agregarBoton("Iniciar Sesión", () -> gestorPaneles.mostrarPanel(new PanelSesion(gestorPaneles))));
-        botonesPanel.add(agregarBoton("Crear Jugador", () -> gestorPaneles.mostrarPanel(new PanelCrearJugador(gestorPaneles))));
-        botonesPanel.add(agregarBoton("Salir", () -> System.exit(0)));
-
+        botonesPanel.add(agregarBoton("Aceptar", () -> { accionAceptar.run(); }));
     }
 }

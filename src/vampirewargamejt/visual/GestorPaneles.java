@@ -25,6 +25,9 @@ public class GestorPaneles {
     }
 
     public void mostrarPanel(JPanel panel) {
+        if (panel instanceof PanelAbstracto) {
+            ((PanelAbstracto) panel).iniciarPanel();
+        }
         panelPrincipal.removeAll();
         panelPrincipal.add(panel);
         panelPrincipal.revalidate();

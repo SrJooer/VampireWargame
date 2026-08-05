@@ -12,14 +12,11 @@ public class PanelCrearJugador extends PanelAbstracto {
     private JPanel botonesPanel;
     private JPanel formularioPanel;
 
-    private JLabel responseLabel;
-
     private JTextField nombreUsuario;
     private JTextField clave;
 
     public PanelCrearJugador(GestorPaneles gestorPaneles) {
         super(gestorPaneles);
-        iniciarPanel();
     }
 
     @Override
@@ -35,10 +32,7 @@ public class PanelCrearJugador extends PanelAbstracto {
     private void prepararMenu() {
         menuPanel = agregarPanel(1);
         menuPanel.add(agregarTitulo("Crear Jugador"));
-        responseLabel = agregarLabel("");
         menuPanel.add(Box.createVerticalStrut(80));
-        menuPanel.add(responseLabel);
-        menuPanel.add(Box.createVerticalStrut(12));
         menuPanel.add(formularioPanel);
         menuPanel.add(Box.createVerticalStrut(40));
         menuPanel.add(botonesPanel);
@@ -60,24 +54,23 @@ public class PanelCrearJugador extends PanelAbstracto {
         botonesPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelInicio(gestorPaneles))));
         botonesPanel.add(agregarBoton("Crear Jugador", () -> {
-            int response = GestorUsuarios.registrarUsuario(nombreUsuario.getText(), clave.getText());
-            showResponse(response);
+            String nombre = nombreUsuario.getText();
+            String clave = this.clave.getText();
+            int response = GestorUsuarios.registrarUsuario(nombre, clave);
+            showResponse(response, nombre, clave);
         }));
     }
 
-    private void showResponse(int response) {
-        boolean created = response == 1;
-
-        if (created) {
-            nombreUsuario.setText("");
-            clave.setText("");
-        }
+    private void showResponse(int response, String nombre, String clave) {
 
         switch (response) {
-            case 4, 3 -> responseLabel.setText("Rellene todos los campos");
-            case 2 -> responseLabel.setText("La clave debe tener 5 caracteres");
-            case 1 ->  responseLabel.setText("Usuario creado con éxito");
-            case 0 -> responseLabel.setText("El usuario ya existe");
+            case 4, 3 -> mostrarPanelTexto("Rellene todos los campos", new PanelInicio(gestorPaneles));
+            case 2 -> mostrarPanelTexto("La clave debe tener 5 caracteres", new PanelInicio(gestorPaneles));
+            case 1 ->  {
+                GestorUsuarios.iniciarSesion(nombre, clave);
+                gestorPaneles.mostrarPanel(new PanelMenuPrincipal(gestorPaneles));
+            }
+            case 0 -> mostrarPanelTexto("El usuario ya existe", new PanelInicio(gestorPaneles));
         }
     }
 

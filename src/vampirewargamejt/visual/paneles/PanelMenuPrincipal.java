@@ -13,7 +13,6 @@ public class PanelMenuPrincipal extends PanelAbstracto{
 
     public PanelMenuPrincipal(GestorPaneles gestorPaneles) {
         super(gestorPaneles);
-        iniciarPanel();
     }
 
     @Override
@@ -35,9 +34,16 @@ public class PanelMenuPrincipal extends PanelAbstracto{
     private void prepararBotones() {
         botonesPanel = agregarPanel(new GridLayout(4, 1, 0, 12));
         botonesPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        botonesPanel.add(agregarBoton("Jugar Vampire Wargame", () -> gestorPaneles.mostrarPanel(new PanelInicio(gestorPaneles))));
+        botonesPanel.add(agregarBoton("Jugar Vampire Wargame", () ->
+                {
+                    if (GestorUsuarios.obtenerJugadoresDisponibles().length == 0) {
+                        mostrarPanelTexto("No hay más jugadores disponibles para jugar.", new PanelMenuPrincipal(gestorPaneles));
+                    } else {
+                        gestorPaneles.mostrarPanel(new PanelSelector(gestorPaneles));
+                    }
+                }));
         botonesPanel.add(agregarBoton("Mi Cuenta", () -> gestorPaneles.mostrarPanel(new PanelMiCuenta(gestorPaneles))));
-        botonesPanel.add(agregarBoton("Reportes", () -> System.exit(0)));
+        botonesPanel.add(agregarBoton("Reportes", () -> gestorPaneles.mostrarPanel(new PanelReportes(gestorPaneles))));
         botonesPanel.add(agregarBoton("Cerrar sesión", () -> {
             gestorPaneles.mostrarPanel(new PanelInicio(gestorPaneles));
             GestorUsuarios.cerrarSesion();

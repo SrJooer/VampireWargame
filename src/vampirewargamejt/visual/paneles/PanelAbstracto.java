@@ -8,7 +8,6 @@ import java.awt.*;
 public abstract class PanelAbstracto extends JPanel {
 
     protected final GestorPaneles gestorPaneles;
-
     protected JPanel contenidoPanel;
 
     public PanelAbstracto(GestorPaneles gestorPaneles) {
@@ -88,6 +87,41 @@ public abstract class PanelAbstracto extends JPanel {
         JPanel p = agregarPanel(new FlowLayout());
         p.setLayout(new BoxLayout(p, (n == 0? BoxLayout.X_AXIS : BoxLayout.Y_AXIS)));
         return p;
+    }
+
+    public JTextArea agregarAreaTexto() {
+        JTextArea areaTexto = new JTextArea(10, 30);
+        areaTexto.setLineWrap(true);
+        areaTexto.setWrapStyleWord(true);
+        areaTexto.setOpaque(false);
+        areaTexto.setFont(new Font("Arial", Font.PLAIN, 16));
+        areaTexto.setForeground(Color.WHITE);
+        return areaTexto;
+    }
+
+    public JScrollPane agregarScrollPanel() {
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBackground(Color.BLACK);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setBackground(Color.BLACK);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setPreferredSize(new Dimension(600, 300));
+        return scrollPane;
+    }
+
+    public JComboBox<String> agregarComboBox(String[] opciones) {
+        JComboBox<String> comboBox = new JComboBox<>(opciones);
+        comboBox.setFont(new Font("Arial", Font.PLAIN, 16));
+        comboBox.setForeground(Color.WHITE);
+        comboBox.setBackground(Color.BLACK);
+        return comboBox;
+    }
+
+    public void mostrarPanelTexto(String texto, PanelAbstracto nuevoPanel) {
+        PanelTexto panel = new PanelTexto(gestorPaneles, texto, () -> { gestorPaneles.mostrarPanel(nuevoPanel); });
+        gestorPaneles.mostrarPanel(panel);
     }
 
     protected void prepararContenido() {

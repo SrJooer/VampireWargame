@@ -13,11 +13,9 @@ public class PanelCambiarClave extends PanelAbstracto {
     private JPanel botonesPanel;
 
     private JTextField nuevaClave;
-    private JLabel responseLabel;
 
     public PanelCambiarClave(GestorPaneles gestorPaneles) {
         super(gestorPaneles);
-        iniciarPanel();
     }
 
     @Override
@@ -35,15 +33,13 @@ public class PanelCambiarClave extends PanelAbstracto {
         menuPanel = agregarPanel(1);
         menuPanel.add(agregarTitulo("Cambiar Contraseña"));
         menuPanel.add(Box.createVerticalStrut(40));
-        responseLabel = agregarLabel(" ");
-        menuPanel.add(responseLabel);
         menuPanel.add(formularioPanel);
         menuPanel.add(Box.createVerticalStrut(40));
         menuPanel.add(botonesPanel);
     }
 
     private void prepararFormulario() {
-        formularioPanel = agregarPanel(new GridLayout(2, 2, 0, 12));
+        formularioPanel = agregarPanel(new GridLayout(1, 2, 12, 12));
         formularioPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         formularioPanel.add(agregarLabel("Nueva Contraseña:"));
         nuevaClave = agregarCampoTexto("Ingrese su nueva contraseña");
@@ -61,16 +57,16 @@ public class PanelCambiarClave extends PanelAbstracto {
     private void mostrarRepuesta(int repuesta) {
         switch (repuesta) {
             case 1:
-                responseLabel.setText("Error al cambiar la contraseña.");
+                mostrarPanelTexto("Error al cambiar la contraseña.", new PanelMiCuenta(gestorPaneles));
                 break;
             case 2:
-                responseLabel.setText("Contraseña cambiada con éxito.");
+                mostrarPanelTexto("Contraseña cambiada con éxito.", new PanelMiCuenta(gestorPaneles));
                 break;
             case 3:
-                responseLabel.setText("La nueva contraseña debe tener exactamente 5 caracteres.");
+                mostrarPanelTexto("La nueva contraseña debe tener exactamente 5 caracteres.", new PanelMiCuenta(gestorPaneles));
                 break;
             case 4:
-                responseLabel.setText("La nueva contraseña no puede estar vacía.");
+                mostrarPanelTexto("La nueva contraseña no puede estar vacía.", new PanelMiCuenta(gestorPaneles));
                 break;
         }
     }

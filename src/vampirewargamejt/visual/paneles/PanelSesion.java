@@ -19,7 +19,6 @@ public class PanelSesion extends PanelAbstracto {
 
     public PanelSesion(GestorPaneles gestorPaneles) {
         super(gestorPaneles);
-        iniciarPanel();
     }
 
     @Override
