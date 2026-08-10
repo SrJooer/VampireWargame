@@ -1,5 +1,6 @@
 package vampirewargamejt.visual.paneles;
 
+import vampirewargamejt.modelo.usuarios.GestorUsuarios;
 import vampirewargamejt.visual.GestorPaneles;
 
 import javax.swing.*;
@@ -8,10 +9,12 @@ import java.awt.*;
 public abstract class PanelAbstracto extends JPanel {
 
     protected final GestorPaneles gestorPaneles;
+    protected final GestorUsuarios gestorUsuarios;
     protected JPanel contenidoPanel;
 
-    public PanelAbstracto(GestorPaneles gestorPaneles) {
-        this.gestorPaneles = gestorPaneles;
+    public PanelAbstracto() {
+        this.gestorPaneles = GestorPaneles.getInstance();
+        this.gestorUsuarios = GestorUsuarios.getInstance();
     }
 
     public abstract void iniciarPanel();
@@ -119,10 +122,6 @@ public abstract class PanelAbstracto extends JPanel {
         return comboBox;
     }
 
-    public void mostrarPanelTexto(String texto, PanelAbstracto nuevoPanel) {
-        PanelTexto panel = new PanelTexto(gestorPaneles, texto, () -> { gestorPaneles.mostrarPanel(nuevoPanel); });
-        gestorPaneles.mostrarPanel(panel);
-    }
 
     protected void prepararContenido() {
         setLayout(new BorderLayout());
@@ -130,5 +129,40 @@ public abstract class PanelAbstracto extends JPanel {
         contenidoPanel = new JPanel();
         contenidoPanel.setLayout(new GridBagLayout());
         contenidoPanel.setBackground(Color.BLACK);
+    }
+
+    public GridBagConstraints crearGbc(int x, int y) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = x;
+        gbc.gridy = y;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        return gbc;
+    }
+
+    public GridBagConstraints agregarGbc(int x, int y, int ancho, int alto) {
+        GridBagConstraints gbc = crearGbc(x, y);
+        gbc.gridwidth = ancho;
+        gbc.gridheight = alto;
+        return gbc;
+    }
+
+    public GridBagConstraints agregarGbc(int x, int y, int ancho, int alto, int margin) {
+        GridBagConstraints gbc = agregarGbc(x, y, ancho, alto);
+        gbc.insets = new Insets(margin, margin, margin, margin);
+        return gbc;
+    }
+
+    public void mostrarPanelTexto(String texto, PanelAbstracto siguientePanel) {
+        PanelTexto panel = new PanelTexto(texto, () -> gestorPaneles.mostrarPanel(siguientePanel));
+        gestorPaneles.mostrarPanel(panel);
+    }
+
+    public Color getColor(int r, int g, int b) {
+        return new Color(r, g, b);
     }
 }

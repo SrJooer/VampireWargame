@@ -1,7 +1,5 @@
 package vampirewargamejt.visual.paneles;
 
-import vampirewargamejt.visual.GestorPaneles;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -12,8 +10,8 @@ public class PanelTexto extends PanelAbstracto {
     private Runnable accionAceptar;
     private JLabel texto;
 
-    public PanelTexto(GestorPaneles gestorPaneles, String texto, Runnable accionAceptar) {
-        super(gestorPaneles);
+    public PanelTexto(String texto, Runnable accionAceptar) {
+        super();
         this.accionAceptar = accionAceptar;
         this.texto = agregarLabel(texto);
     }

@@ -1,8 +1,5 @@
 package vampirewargamejt.visual.paneles;
 
-import vampirewargamejt.modelo.usuarios.GestorUsuarios;
-import vampirewargamejt.visual.GestorPaneles;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -11,10 +8,6 @@ public class PanelRanking extends PanelAbstracto {
     private JPanel menuPanel;
     private JPanel botonesPanel;
     private JPanel rankingPanel;
-
-    public PanelRanking(GestorPaneles gestorPaneles) {
-        super(gestorPaneles);
-    }
 
     @Override
     public void iniciarPanel() {
@@ -41,7 +34,7 @@ public class PanelRanking extends PanelAbstracto {
         int numJugadores = 10;
 
         rankingPanel = agregarPanel(new GridLayout(numJugadores, 2, 12, 12));
-        String[] UsuariosOrdenados = GestorUsuarios.getUsuariosOrdenados(numJugadores);
+        String[] UsuariosOrdenados = gestorUsuarios.getUsuariosOrdenados(numJugadores);
 
         for (int i = 0; i < numJugadores; i++) {
             rankingPanel.add(agregarLabel((i + 1) + " .- "));
@@ -53,7 +46,7 @@ public class PanelRanking extends PanelAbstracto {
     private void prepararBotones() {
         botonesPanel = agregarPanel(new GridLayout(1, 1, 0, 12));
         botonesPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelReportes(gestorPaneles))));
+        botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelReportes())));
     }
 
 

@@ -1,7 +1,5 @@
 package vampirewargamejt.visual.paneles;
 
-import vampirewargamejt.visual.GestorPaneles;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -9,10 +7,6 @@ public class PanelInicio extends PanelAbstracto {
 
     private JPanel menuPanel;
     private JPanel botonesPanel;
-
-    public PanelInicio(GestorPaneles gestorPaneles) {
-        super(gestorPaneles);
-    }
 
     @Override
     public void iniciarPanel() {
@@ -35,8 +29,8 @@ public class PanelInicio extends PanelAbstracto {
         botonesPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         botonesPanel.setOpaque(false);
 
-        botonesPanel.add(agregarBoton("Iniciar Sesión", () -> gestorPaneles.mostrarPanel(new PanelSesion(gestorPaneles))));
-        botonesPanel.add(agregarBoton("Crear Jugador", () -> gestorPaneles.mostrarPanel(new PanelCrearJugador(gestorPaneles))));
+        botonesPanel.add(agregarBoton("Iniciar Sesión", () -> gestorPaneles.mostrarPanel(new PanelSesion())));
+        botonesPanel.add(agregarBoton("Crear Jugador", () -> gestorPaneles.mostrarPanel(new PanelCrearJugador())));
         botonesPanel.add(agregarBoton("Salir", () -> System.exit(0)));
 
     }

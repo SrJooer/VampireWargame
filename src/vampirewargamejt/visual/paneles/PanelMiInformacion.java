@@ -1,8 +1,5 @@
 package vampirewargamejt.visual.paneles;
 
-import vampirewargamejt.modelo.usuarios.GestorUsuarios;
-import vampirewargamejt.visual.GestorPaneles;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -11,10 +8,6 @@ public class PanelMiInformacion extends PanelAbstracto {
     private JPanel menuPanel;
     private JPanel tablaPanel;
     private JPanel botonesPanel;
-
-    public PanelMiInformacion(GestorPaneles gestorPaneles) {
-        super(gestorPaneles);
-    }
 
     @Override
     public void iniciarPanel() {
@@ -39,20 +32,20 @@ public class PanelMiInformacion extends PanelAbstracto {
         tablaPanel = agregarPanel(new GridLayout(5, 2, 12, 12));
         tablaPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         tablaPanel.add(agregarLabel("Nombre: "));
-        tablaPanel.add(agregarLabel(GestorUsuarios.getUsuarioActual().getNombre()));
+        tablaPanel.add(agregarLabel(gestorUsuarios.getUsuarioActual().getNombre()));
         tablaPanel.add(agregarLabel("Contraseña: "));
-        tablaPanel.add(agregarLabel(GestorUsuarios.getUsuarioActual().getClave()));
+        tablaPanel.add(agregarLabel(gestorUsuarios.getUsuarioActual().getClave()));
         tablaPanel.add(agregarLabel("Puntuaje: "));
-        tablaPanel.add(agregarLabel(String.valueOf(GestorUsuarios.getUsuarioActual().getPuntos())));
+        tablaPanel.add(agregarLabel(String.valueOf(gestorUsuarios.getUsuarioActual().getPuntos())));
         tablaPanel.add(agregarLabel("Partidas Ganadas: "));
-        tablaPanel.add(agregarLabel(String.valueOf(GestorUsuarios.getUsuarioActual().getGanadas())));
+        tablaPanel.add(agregarLabel(String.valueOf(gestorUsuarios.getUsuarioActual().getGanadas())));
         tablaPanel.add(agregarLabel("Partidas Perdidas: "));
-        tablaPanel.add(agregarLabel(String.valueOf(GestorUsuarios.getUsuarioActual().getPerdidas())));
+        tablaPanel.add(agregarLabel(String.valueOf(gestorUsuarios.getUsuarioActual().getPerdidas())));
     }
 
     private void prepararBotones() {
         botonesPanel = agregarPanel(new GridLayout(1, 2, 12, 0));
         botonesPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelMiCuenta(gestorPaneles))));
+        botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelMiCuenta())));
     }
 }

@@ -1,8 +1,5 @@
 package vampirewargamejt.visual.paneles;
 
-import vampirewargamejt.modelo.usuarios.GestorUsuarios;
-import vampirewargamejt.visual.GestorPaneles;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -13,10 +10,6 @@ public class PanelCambiarClave extends PanelAbstracto {
     private JPanel botonesPanel;
 
     private JTextField nuevaClave;
-
-    public PanelCambiarClave(GestorPaneles gestorPaneles) {
-        super(gestorPaneles);
-    }
 
     @Override
     public void iniciarPanel() {
@@ -48,25 +41,25 @@ public class PanelCambiarClave extends PanelAbstracto {
 
     private void prepararBotones() {
         botonesPanel = agregarPanel(new GridLayout(1, 2, 24, 12));
-        botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelMiCuenta(gestorPaneles))));
+        botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelMiCuenta())));
         botonesPanel.add(agregarBoton("Cambiar", () -> {
-            mostrarRepuesta(GestorUsuarios.cambiarClave(nuevaClave.getText()));
+            mostrarRepuesta(gestorUsuarios.cambiarClave(nuevaClave.getText()));
         }));
     }
 
     private void mostrarRepuesta(int repuesta) {
         switch (repuesta) {
             case 1:
-                mostrarPanelTexto("Error al cambiar la contraseña.", new PanelMiCuenta(gestorPaneles));
+                mostrarPanelTexto("Error al cambiar la contraseña.", new PanelMiCuenta());
                 break;
             case 2:
-                mostrarPanelTexto("Contraseña cambiada con éxito.", new PanelMiCuenta(gestorPaneles));
+                mostrarPanelTexto("Contraseña cambiada con éxito.", new PanelMiCuenta());
                 break;
             case 3:
-                mostrarPanelTexto("La nueva contraseña debe tener exactamente 5 caracteres.", new PanelMiCuenta(gestorPaneles));
+                mostrarPanelTexto("La nueva contraseña debe tener exactamente 5 caracteres.", new PanelMiCuenta());
                 break;
             case 4:
-                mostrarPanelTexto("La nueva contraseña no puede estar vacía.", new PanelMiCuenta(gestorPaneles));
+                mostrarPanelTexto("La nueva contraseña no puede estar vacía.", new PanelMiCuenta());
                 break;
         }
     }

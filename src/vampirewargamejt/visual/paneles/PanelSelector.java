@@ -1,19 +1,14 @@
 package vampirewargamejt.visual.paneles;
 
-import vampirewargamejt.modelo.usuarios.GestorUsuarios;
-import vampirewargamejt.visual.GestorPaneles;
-
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public class PanelSelector extends PanelAbstracto {
 
     private JPanel menuPanel;
     private JPanel botonesPanel;
-
-    public PanelSelector(GestorPaneles gestorPaneles) {
-        super(gestorPaneles);
-    }
+    private JComboBox<String> comboBox;
 
     @Override
     public void iniciarPanel() {
@@ -22,15 +17,16 @@ public class PanelSelector extends PanelAbstracto {
         prepararMenu();
 
         contenidoPanel.add(menuPanel);
-        add(contenidoPanel);
+        add(contenidoPanel, BorderLayout.CENTER);
     }
 
     private void prepararMenu() {
         menuPanel = agregarPanel(1);
         menuPanel.add(agregarTitulo("Seleccionar Contricante"));
         menuPanel.add(Box.createVerticalStrut(40));
-        String[] jugadores = GestorUsuarios.obtenerJugadoresDisponibles();
-        menuPanel.add(agregarComboBox(jugadores));
+        String[] jugadores = gestorUsuarios.obtenerJugadoresDisponibles();
+        comboBox = agregarComboBox(jugadores);
+        menuPanel.add(comboBox);
         menuPanel.add(Box.createVerticalStrut(40));
         menuPanel.add(botonesPanel);
     }
@@ -38,10 +34,10 @@ public class PanelSelector extends PanelAbstracto {
     private void prepararBotones() {
         botonesPanel = agregarPanel(new GridLayout(1, 2, 12, 0));
         botonesPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelMenuPrincipal())));
         botonesPanel.add(agregarBoton("Jugar", () -> {
-            // Acción para iniciar el juego con el contrincante seleccionado
-            JOptionPane.showMessageDialog(this, "Iniciando juego...");
+            gestorUsuarios.establecerContricante(Objects.requireNonNull(comboBox.getSelectedItem()).toString());
+            gestorPaneles.mostrarPanel(new PanelJuego());
         }));
-        botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelMenuPrincipal(gestorPaneles))));
     }
 }

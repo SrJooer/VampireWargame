@@ -1,8 +1,5 @@
 package vampirewargamejt.visual.paneles;
 
-import vampirewargamejt.modelo.usuarios.GestorUsuarios;
-import vampirewargamejt.visual.GestorPaneles;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -12,10 +9,6 @@ public class PanelHistorial extends PanelAbstracto{
     private JPanel menuPanel;
     private JPanel botonesPanel;
     private JScrollPane scrollPane;
-
-    public PanelHistorial(GestorPaneles gestorPaneles) {
-        super(gestorPaneles);
-    }
 
     @Override
     public void iniciarPanel() {
@@ -39,7 +32,7 @@ public class PanelHistorial extends PanelAbstracto{
     private void prepararHistorialMenu() {
         JTextArea historial = agregarAreaTexto();
 
-        ArrayList<String> historialJugadores = GestorUsuarios.usuarioActual.getHistorial();
+        ArrayList<String> historialJugadores = gestorUsuarios.getUsuarioActual().getHistorial();
 
         for (String mensaje : historialJugadores) {
             historial.append(mensaje + "\n");
@@ -53,6 +46,6 @@ public class PanelHistorial extends PanelAbstracto{
     private void prepararBotones() {
         botonesPanel = agregarPanel(new GridLayout(1, 1, 0, 12));
         botonesPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelReportes(gestorPaneles))));
+        botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelReportes())));
     }
 }

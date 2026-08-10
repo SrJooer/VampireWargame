@@ -1,8 +1,5 @@
 package vampirewargamejt.visual.paneles;
 
-import vampirewargamejt.modelo.usuarios.GestorUsuarios;
-import vampirewargamejt.visual.GestorPaneles;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -12,14 +9,8 @@ public class PanelSesion extends PanelAbstracto {
     private JPanel formularioPanel;
     private JPanel botonesPanel;
 
-    private JLabel responseLabel;
-
     private JTextField nombreUsuario;
     private JTextField clave;
-
-    public PanelSesion(GestorPaneles gestorPaneles) {
-        super(gestorPaneles);
-    }
 
     @Override
     public void iniciarPanel() {
@@ -34,10 +25,7 @@ public class PanelSesion extends PanelAbstracto {
     private void prepararMenu() {
         menuPanel = agregarPanel(1);
         menuPanel.add(agregarTitulo("Iniciar Sesión"));
-        responseLabel = agregarLabel("");
         menuPanel.add(Box.createVerticalStrut(80));
-        menuPanel.add(responseLabel);
-        menuPanel.add(Box.createVerticalStrut(12));
         menuPanel.add(formularioPanel);
         menuPanel.add(Box.createVerticalStrut(40));
         menuPanel.add(botonesPanel);
@@ -57,20 +45,20 @@ public class PanelSesion extends PanelAbstracto {
     private void prepararBotones() {
         botonesPanel = agregarPanel(new GridLayout(1, 2, 24, 12));
         botonesPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelInicio(gestorPaneles))));
+        botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelInicio())));
         botonesPanel.add(agregarBoton("Iniciar sesión", () -> {
-            int response = GestorUsuarios.iniciarSesion(nombreUsuario.getText(), clave.getText());
+            int response = gestorUsuarios.iniciarSesion(nombreUsuario.getText(), clave.getText());
             showResponse(response);
         }));
     }
 
     private void showResponse(int response) {
         switch (response) {
-            case 5,4 -> responseLabel.setText("Rellene todos los campos");
-            case 3 -> responseLabel.setText("Usuario desactivado");
-            case 2 -> gestorPaneles.mostrarPanel(new PanelMenuPrincipal(gestorPaneles));
-            case 1, 0 -> responseLabel.setText("Usuario o clave incorrectos");
-            default -> responseLabel.setText("Error desconocido");
+            case 5,4 -> mostrarPanelTexto("Rellene todos los campos", new PanelInicio());
+            case 3 -> mostrarPanelTexto("Usuario desactivado", new PanelInicio());
+            case 2 -> gestorPaneles.mostrarPanel(new PanelMenuPrincipal());
+            case 1, 0 -> mostrarPanelTexto("Usuario o clave incorrectos", new PanelInicio());
+            default -> mostrarPanelTexto("Error desconocido", new PanelInicio());
         }
     }
 }

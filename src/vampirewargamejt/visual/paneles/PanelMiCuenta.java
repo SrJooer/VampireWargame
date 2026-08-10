@@ -1,8 +1,5 @@
 package vampirewargamejt.visual.paneles;
 
-import vampirewargamejt.modelo.usuarios.GestorUsuarios;
-import vampirewargamejt.visual.GestorPaneles;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -10,10 +7,6 @@ public class PanelMiCuenta extends PanelAbstracto {
 
     private JPanel menuPanel;
     private JPanel botonesPanel;
-
-    public PanelMiCuenta(GestorPaneles gestorPaneles) {
-        super(gestorPaneles);
-    }
 
     @Override
     public void iniciarPanel() {
@@ -34,12 +27,12 @@ public class PanelMiCuenta extends PanelAbstracto {
     public void prepararBotones() {
         botonesPanel = agregarPanel(new GridLayout(4, 1, 24, 12));
         botonesPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        botonesPanel.add(agregarBoton("Ver mi información", () -> gestorPaneles.mostrarPanel(new PanelMiInformacion(gestorPaneles))));
-        botonesPanel.add(agregarBoton("Cambiar contraseña", () -> gestorPaneles.mostrarPanel(new PanelCambiarClave(gestorPaneles))));
+        botonesPanel.add(agregarBoton("Ver mi información", () -> gestorPaneles.mostrarPanel(new PanelMiInformacion())));
+        botonesPanel.add(agregarBoton("Cambiar contraseña", () -> gestorPaneles.mostrarPanel(new PanelCambiarClave())));
         botonesPanel.add(agregarBoton("Cerrar mi cuenta", () -> {
-            gestorPaneles.mostrarPanel(new PanelInicio(gestorPaneles));
-            GestorUsuarios.cerrarCuenta();
+            gestorPaneles.mostrarPanel(new PanelInicio());
+            gestorUsuarios.cerrarCuenta();
         }));
-        botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelMenuPrincipal(gestorPaneles))));
+        botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelMenuPrincipal())));
     }
 }

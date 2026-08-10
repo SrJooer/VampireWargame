@@ -4,10 +4,20 @@ import java.util.ArrayList;
 
 public class GestorUsuarios {
 
-    public static ArrayList<Usuario> usuarios = new ArrayList<>();
-    public static Usuario usuarioActual;
+    private static GestorUsuarios instancia;
 
-    public static int iniciarSesion(String nombre, String clave) {
+    private ArrayList<Usuario> usuarios = new ArrayList<>();
+    private Usuario usuarioActual;
+    private Usuario usuarioContricante;
+
+    public static GestorUsuarios getInstance() {
+        if (instancia == null) {
+            instancia = new GestorUsuarios();
+        }
+        return instancia;
+    }
+
+    public int iniciarSesion(String nombre, String clave) {
 
         if (nombre == null || clave == null) {
             return 5;
@@ -32,7 +42,7 @@ public class GestorUsuarios {
         return 0;
     }
 
-    public static int cambiarClave(String nuevaClave) {
+    public int cambiarClave(String nuevaClave) {
         if (nuevaClave == null || nuevaClave.isEmpty()) {
             return 4;
         }
@@ -46,18 +56,18 @@ public class GestorUsuarios {
         return 1;
     }
 
-    public static void cerrarCuenta() {
+    public void cerrarCuenta() {
         if (usuarioActual != null) {
             usuarioActual.desactivar();
             usuarioActual = null;
         }
     }
 
-    public static void cerrarSesion() {
+    public void cerrarSesion() {
         usuarioActual = null;
     }
 
-    public static int registrarUsuario(String nombre, String clave) {
+    public int registrarUsuario(String nombre, String clave) {
 
         if (nombre == null || clave == null) {
             return 4;
@@ -78,7 +88,7 @@ public class GestorUsuarios {
         return 0;
     }
 
-    public static Usuario encontrarUsuario(String nombre) {
+    public Usuario encontrarUsuario(String nombre) {
         for (Usuario usuario : usuarios) {
             if (usuario.getNombre().equals(nombre)) {
                 return usuario;
@@ -87,7 +97,7 @@ public class GestorUsuarios {
         return null;
     }
 
-    public static String[] getUsuariosOrdenados(int cantidad) {
+    public String[] getUsuariosOrdenados(int cantidad) {
         ArrayList<Usuario> usuariosActivos = new ArrayList<>();
         for (Usuario usuario : usuarios) {
             if (usuario.isActivo()) {
@@ -110,7 +120,7 @@ public class GestorUsuarios {
         return resultado;
     }
 
-    public static String[] obtenerJugadoresDisponibles() {
+    public String[] obtenerJugadoresDisponibles() {
         ArrayList<Usuario> jugadoresDisponibles = new ArrayList<>();
         for (Usuario usuario : usuarios) {
             if (usuario.isActivo() && usuario != usuarioActual) {
@@ -124,7 +134,7 @@ public class GestorUsuarios {
         return resultado;
     }
 
-    private static void ordenarRecursivo(ArrayList<Usuario> lista, int inicio, int fin) {
+    private void ordenarRecursivo(ArrayList<Usuario> lista, int inicio, int fin) {
         if (inicio < fin) {
             int indicePivote = particion(lista, inicio, fin);
             ordenarRecursivo(lista, inicio, indicePivote - 1);
@@ -132,7 +142,7 @@ public class GestorUsuarios {
         }
     }
 
-    private static int particion(ArrayList<Usuario> lista, int inicio, int fin) {
+    private int particion(ArrayList<Usuario> lista, int inicio, int fin) {
         int pivote = lista.get(fin).getPuntos();
         int i = inicio - 1;
 
@@ -152,5 +162,11 @@ public class GestorUsuarios {
         return i + 1;
     }
 
-    public static Usuario getUsuarioActual() { return usuarioActual; }
+    public void establecerContricante(String usuario) {
+        Usuario u = encontrarUsuario(usuario);
+        if (u != null) { usuarioContricante = u; }
+    }
+
+    public Usuario getUsuarioActual() { return usuarioActual; }
+    public Usuario getUsuarioContricante() { return usuarioContricante; }
 }

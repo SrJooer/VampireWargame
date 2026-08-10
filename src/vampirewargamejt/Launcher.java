@@ -1,33 +1,20 @@
 package vampirewargamejt;
 
-
+import vampirewargamejt.modelo.usuarios.GestorUsuarios;
 import vampirewargamejt.visual.GestorPaneles;
+import vampirewargamejt.visual.paneles.PanelSelector;
 
-import javax.swing.*;
-
-public class Launcher extends JFrame {
-
-    private final int ANCHO = 1280;
-    private final int ALTURA = 720;
-
-    private GestorPaneles gestorPaneles;
+public class Launcher {
 
     public Launcher() {
-        super("Vampire Wargame");
-        iniciarVentana();
-        iniciarGestorPaneles();
-        setVisible(true);
-    }
+        GestorPaneles gestorPaneles = GestorPaneles.getInstance();
+        gestorPaneles.iniciarPanelPrincipal();
 
-    private void iniciarVentana() {
-        setSize(ANCHO, ALTURA);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        // TODO: JUEGO RAPIDO POR TESTEO
+        GestorUsuarios gestorUsuarios = GestorUsuarios.getInstance();
+        gestorUsuarios.registrarUsuario("Julio", "12345");
+        gestorUsuarios.registrarUsuario("Keren", "12345");
+        gestorUsuarios.iniciarSesion("Julio", "12345");
+        gestorPaneles.mostrarPanel(new PanelSelector());
     }
-
-    private void iniciarGestorPaneles() {
-        gestorPaneles = new GestorPaneles(this);
-    }
-
-    public GestorPaneles getGestorPaneles() { return gestorPaneles; }
 }

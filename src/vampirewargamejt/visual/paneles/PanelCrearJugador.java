@@ -1,8 +1,5 @@
 package vampirewargamejt.visual.paneles;
 
-import vampirewargamejt.modelo.usuarios.GestorUsuarios;
-import vampirewargamejt.visual.GestorPaneles;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -14,10 +11,6 @@ public class PanelCrearJugador extends PanelAbstracto {
 
     private JTextField nombreUsuario;
     private JTextField clave;
-
-    public PanelCrearJugador(GestorPaneles gestorPaneles) {
-        super(gestorPaneles);
-    }
 
     @Override
     public void iniciarPanel() {
@@ -52,11 +45,11 @@ public class PanelCrearJugador extends PanelAbstracto {
     private void prepararBotones() {
         botonesPanel = agregarPanel(new GridLayout(1, 2, 24, 12));
         botonesPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelInicio(gestorPaneles))));
+        botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelInicio())));
         botonesPanel.add(agregarBoton("Crear Jugador", () -> {
             String nombre = nombreUsuario.getText();
             String clave = this.clave.getText();
-            int response = GestorUsuarios.registrarUsuario(nombre, clave);
+            int response = gestorUsuarios.registrarUsuario(nombre, clave);
             showResponse(response, nombre, clave);
         }));
     }
@@ -64,13 +57,13 @@ public class PanelCrearJugador extends PanelAbstracto {
     private void showResponse(int response, String nombre, String clave) {
 
         switch (response) {
-            case 4, 3 -> mostrarPanelTexto("Rellene todos los campos", new PanelInicio(gestorPaneles));
-            case 2 -> mostrarPanelTexto("La clave debe tener 5 caracteres", new PanelInicio(gestorPaneles));
+            case 4, 3 -> mostrarPanelTexto("Rellene todos los campos", new PanelInicio());
+            case 2 -> mostrarPanelTexto("La clave debe tener 5 caracteres", new PanelInicio());
             case 1 ->  {
-                GestorUsuarios.iniciarSesion(nombre, clave);
-                gestorPaneles.mostrarPanel(new PanelMenuPrincipal(gestorPaneles));
+                gestorUsuarios.iniciarSesion(nombre, clave);
+                gestorPaneles.mostrarPanel(new PanelMenuPrincipal());
             }
-            case 0 -> mostrarPanelTexto("El usuario ya existe", new PanelInicio(gestorPaneles));
+            case 0 -> mostrarPanelTexto("El usuario ya existe", new PanelInicio());
         }
     }
 
