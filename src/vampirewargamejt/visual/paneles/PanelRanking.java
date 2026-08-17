@@ -1,10 +1,11 @@
 package vampirewargamejt.visual.paneles;
 
+import vampirewargamejt.modelo.usuarios.Usuario;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class PanelRanking extends PanelAbstracto {
-
     private JPanel menuPanel;
     private JPanel botonesPanel;
     private JPanel rankingPanel;
@@ -30,17 +31,27 @@ public class PanelRanking extends PanelAbstracto {
     }
 
     private void prepararRankingPanel() {
+        Usuario[] ranking = gestorUsuarios.getRanking();
 
-        int numJugadores = 10;
+        rankingPanel = agregarPanel(new GridLayout(0, 3, 32, 10));
 
-        rankingPanel = agregarPanel(new GridLayout(numJugadores, 2, 12, 12));
-        String[] UsuariosOrdenados = gestorUsuarios.getUsuariosOrdenados(numJugadores);
+        rankingPanel.add(agregarCabecera("Posición"));
+        rankingPanel.add(agregarCabecera("Usuario"));
+        rankingPanel.add(agregarCabecera("Puntos"));
 
-        for (int i = 0; i < numJugadores; i++) {
-            rankingPanel.add(agregarLabel((i + 1) + " .- "));
-            rankingPanel.add(agregarLabel(UsuariosOrdenados[i]));
+        for (int i = 0; i < ranking.length; i++) {
+            rankingPanel.add(agregarLabel(String.valueOf(i + 1)));
+            rankingPanel.add(agregarLabel(ranking[i].getNombre()));
+            rankingPanel.add(agregarLabel(String.valueOf(ranking[i].getPuntos())));
         }
+
         rankingPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    }
+
+    private JLabel agregarCabecera(String texto) {
+        JLabel etiqueta = agregarLabel(texto);
+        etiqueta.setForeground(new Color(232, 169, 46));
+        return etiqueta;
     }
 
     private void prepararBotones() {
@@ -48,6 +59,4 @@ public class PanelRanking extends PanelAbstracto {
         botonesPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelReportes())));
     }
-
-
 }

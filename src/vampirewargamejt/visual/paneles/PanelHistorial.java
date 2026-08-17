@@ -1,11 +1,11 @@
 package vampirewargamejt.visual.paneles;
 
+import vampirewargamejt.modelo.usuarios.Usuario;
+
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class PanelHistorial extends PanelAbstracto{
-
     private JPanel menuPanel;
     private JPanel botonesPanel;
     private JScrollPane scrollPane;
@@ -32,10 +32,14 @@ public class PanelHistorial extends PanelAbstracto{
     private void prepararHistorialMenu() {
         JTextArea historial = agregarAreaTexto();
 
-        ArrayList<String> historialJugadores = gestorUsuarios.getUsuarioActual().getHistorial();
+        Usuario usuario = gestorUsuarios.getUsuarioActual();
+        String[] partidas = usuario == null ? new String[0] : usuario.getHistorialArreglo();
 
-        for (String mensaje : historialJugadores) {
-            historial.append(mensaje + "\n");
+        if (partidas.length == 0) {
+            historial.append("Todavía no has terminado ninguna partida.\n");
+        }
+        for (int i = partidas.length - 1; i >= 0; i--) {
+            historial.append(partidas[i] + "\n");
         }
 
         historial.setEditable(false);

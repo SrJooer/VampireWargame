@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GestorPaneles {
-
     private static GestorPaneles gestorPaneles;
 
     private final JFrame ventana;
@@ -28,6 +27,7 @@ public class GestorPaneles {
         JFrame ventana = new JFrame();
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ventana.setSize(1000, 800);
+        ventana.setMinimumSize(new Dimension(900, 700));
         ventana.setLocationRelativeTo(null);
         ventana.setVisible(true);
         return ventana;
@@ -42,7 +42,7 @@ public class GestorPaneles {
 
     public void mostrarPanel(JPanel panel) {
         if (panel instanceof PanelAbstracto) {
-            ((PanelAbstracto) panel).iniciarPanel();
+            ((PanelAbstracto) panel).iniciarSiHaceFalta();
         }
         panelPrincipal.removeAll();
         panelPrincipal.add(panel);

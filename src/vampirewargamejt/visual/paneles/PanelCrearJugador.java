@@ -4,13 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PanelCrearJugador extends PanelAbstracto {
-
     private JPanel menuPanel;
     private JPanel botonesPanel;
     private JPanel formularioPanel;
 
     private JTextField nombreUsuario;
-    private JTextField clave;
+    private JPasswordField clave;
 
     @Override
     public void iniciarPanel() {
@@ -38,7 +37,7 @@ public class PanelCrearJugador extends PanelAbstracto {
         nombreUsuario = agregarCampoTexto("Ingrese su nombre de usuario");
         formularioPanel.add(nombreUsuario);
         formularioPanel.add(agregarLabel("Clave:"));
-        clave = agregarCampoTexto("Ingrese una clave");
+        clave = agregarCampoClave("Ingrese una clave");
         formularioPanel.add(clave);
     }
 
@@ -48,14 +47,13 @@ public class PanelCrearJugador extends PanelAbstracto {
         botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelInicio())));
         botonesPanel.add(agregarBoton("Crear Jugador", () -> {
             String nombre = nombreUsuario.getText();
-            String clave = this.clave.getText();
+            String clave = new String(this.clave.getPassword());
             int response = gestorUsuarios.registrarUsuario(nombre, clave);
             showResponse(response, nombre, clave);
         }));
     }
 
     private void showResponse(int response, String nombre, String clave) {
-
         switch (response) {
             case 4, 3 -> mostrarPanelTexto("Rellene todos los campos", new PanelInicio());
             case 2 -> mostrarPanelTexto("La clave debe tener 5 caracteres", new PanelInicio());
@@ -66,5 +64,4 @@ public class PanelCrearJugador extends PanelAbstracto {
             case 0 -> mostrarPanelTexto("El usuario ya existe", new PanelInicio());
         }
     }
-
 }

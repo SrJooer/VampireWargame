@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PanelInicio extends PanelAbstracto {
-
     private JPanel menuPanel;
     private JPanel botonesPanel;
 
@@ -32,6 +31,5 @@ public class PanelInicio extends PanelAbstracto {
         botonesPanel.add(agregarBoton("Iniciar Sesión", () -> gestorPaneles.mostrarPanel(new PanelSesion())));
         botonesPanel.add(agregarBoton("Crear Jugador", () -> gestorPaneles.mostrarPanel(new PanelCrearJugador())));
         botonesPanel.add(agregarBoton("Salir", () -> System.exit(0)));
-
     }
 }

@@ -1,10 +1,13 @@
 package vampirewargamejt.visual.paneles;
 
+import vampirewargamejt.modelo.usuarios.Usuario;
+
 import javax.swing.*;
 import java.awt.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class PanelMiInformacion extends PanelAbstracto {
-
     private JPanel menuPanel;
     private JPanel tablaPanel;
     private JPanel botonesPanel;
@@ -29,18 +32,35 @@ public class PanelMiInformacion extends PanelAbstracto {
     }
 
     private void prepararTabla() {
-        tablaPanel = agregarPanel(new GridLayout(5, 2, 12, 12));
+        tablaPanel = agregarPanel(new GridLayout(6, 2, 12, 12));
         tablaPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        tablaPanel.add(agregarLabel("Nombre: "));
-        tablaPanel.add(agregarLabel(gestorUsuarios.getUsuarioActual().getNombre()));
-        tablaPanel.add(agregarLabel("Contraseña: "));
-        tablaPanel.add(agregarLabel(gestorUsuarios.getUsuarioActual().getClave()));
-        tablaPanel.add(agregarLabel("Puntuaje: "));
-        tablaPanel.add(agregarLabel(String.valueOf(gestorUsuarios.getUsuarioActual().getPuntos())));
-        tablaPanel.add(agregarLabel("Partidas Ganadas: "));
-        tablaPanel.add(agregarLabel(String.valueOf(gestorUsuarios.getUsuarioActual().getGanadas())));
-        tablaPanel.add(agregarLabel("Partidas Perdidas: "));
-        tablaPanel.add(agregarLabel(String.valueOf(gestorUsuarios.getUsuarioActual().getPerdidas())));
+
+        Usuario usuario = gestorUsuarios.getUsuarioActual();
+        if (usuario == null) {
+            tablaPanel.add(agregarLabel("No hay ninguna sesión activa."));
+            return;
+        }
+
+        agregarFila("Nombre: ", usuario.getNombre());
+        agregarFila("Contraseña: ", ocultar(usuario.getClave()));
+        agregarFila("Miembro desde: ", formatearFecha(usuario.getFechaCreacion()));
+        agregarFila("Puntaje: ", String.valueOf(usuario.getPuntos()));
+        agregarFila("Partidas Ganadas: ", String.valueOf(usuario.getGanadas()));
+        agregarFila("Partidas Perdidas: ", String.valueOf(usuario.getPerdidas()));
+    }
+
+    private void agregarFila(String titulo, String valor) {
+        tablaPanel.add(agregarLabel(titulo));
+        tablaPanel.add(agregarLabel(valor));
+    }
+
+    private String ocultar(String clave) {
+        return clave == null ? "" : "•".repeat(clave.length());
+    }
+
+    private String formatearFecha(Calendar fecha) {
+        if (fecha == null) { return "-"; }
+        return new SimpleDateFormat("dd/MM/yyyy HH:mm").format(fecha.getTime());
     }
 
     private void prepararBotones() {

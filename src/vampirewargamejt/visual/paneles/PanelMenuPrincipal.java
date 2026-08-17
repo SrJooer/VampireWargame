@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PanelMenuPrincipal extends PanelAbstracto{
-
     private JPanel menuPanel;
     private JPanel botonesPanel;
 
@@ -38,8 +37,8 @@ public class PanelMenuPrincipal extends PanelAbstracto{
         botonesPanel.add(agregarBoton("Mi Cuenta", () -> gestorPaneles.mostrarPanel(new PanelMiCuenta())));
         botonesPanel.add(agregarBoton("Reportes", () -> gestorPaneles.mostrarPanel(new PanelReportes())));
         botonesPanel.add(agregarBoton("Cerrar sesión", () -> {
-            gestorPaneles.mostrarPanel(new PanelInicio());
             gestorUsuarios.cerrarSesion();
+            gestorPaneles.mostrarPanel(new PanelInicio());
         }));
         menuPanel.add(botonesPanel);
     }

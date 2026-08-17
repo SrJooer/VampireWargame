@@ -2,10 +2,8 @@ package vampirewargamejt.visual.paneles;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Objects;
 
 public class PanelSelector extends PanelAbstracto {
-
     private JPanel menuPanel;
     private JPanel botonesPanel;
     private JComboBox<String> comboBox;
@@ -35,9 +33,16 @@ public class PanelSelector extends PanelAbstracto {
         botonesPanel = agregarPanel(new GridLayout(1, 2, 12, 0));
         botonesPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelMenuPrincipal())));
-        botonesPanel.add(agregarBoton("Jugar", () -> {
-            gestorUsuarios.establecerContricante(Objects.requireNonNull(comboBox.getSelectedItem()).toString());
-            gestorPaneles.mostrarPanel(new PanelJuego());
-        }));
+        botonesPanel.add(agregarBoton("Jugar", this::empezarPartida));
+    }
+
+    private void empezarPartida() {
+        Object elegido = comboBox.getSelectedItem();
+        if (elegido == null) {
+            mostrarPanelTexto("Selecciona un contrincante para jugar.", new PanelMenuPrincipal());
+            return;
+        }
+        gestorUsuarios.establecerContricante(elegido.toString());
+        gestorPaneles.mostrarPanel(new PanelJuego());
     }
 }

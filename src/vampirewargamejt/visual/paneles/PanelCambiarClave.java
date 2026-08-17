@@ -4,12 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PanelCambiarClave extends PanelAbstracto {
-
     private JPanel menuPanel;
     private JPanel formularioPanel;
     private JPanel botonesPanel;
 
-    private JTextField nuevaClave;
+    private JPasswordField nuevaClave;
 
     @Override
     public void iniciarPanel() {
@@ -35,7 +34,7 @@ public class PanelCambiarClave extends PanelAbstracto {
         formularioPanel = agregarPanel(new GridLayout(1, 2, 12, 12));
         formularioPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         formularioPanel.add(agregarLabel("Nueva Contraseña:"));
-        nuevaClave = agregarCampoTexto("Ingrese su nueva contraseña");
+        nuevaClave = agregarCampoClave("Ingrese su nueva contraseña");
         formularioPanel.add(nuevaClave);
     }
 
@@ -43,7 +42,7 @@ public class PanelCambiarClave extends PanelAbstracto {
         botonesPanel = agregarPanel(new GridLayout(1, 2, 24, 12));
         botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelMiCuenta())));
         botonesPanel.add(agregarBoton("Cambiar", () -> {
-            mostrarRepuesta(gestorUsuarios.cambiarClave(nuevaClave.getText()));
+            mostrarRepuesta(gestorUsuarios.cambiarClave(new String(nuevaClave.getPassword())));
         }));
     }
 
@@ -63,5 +62,4 @@ public class PanelCambiarClave extends PanelAbstracto {
                 break;
         }
     }
-
 }

@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PanelReportes extends PanelAbstracto{
-
     private JPanel menuPanel;
     private JPanel botonesPanel;
 

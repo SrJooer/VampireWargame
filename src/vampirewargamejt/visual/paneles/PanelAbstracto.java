@@ -7,10 +7,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public abstract class PanelAbstracto extends JPanel {
-
     protected final GestorPaneles gestorPaneles;
     protected final GestorUsuarios gestorUsuarios;
     protected JPanel contenidoPanel;
+
+    private boolean iniciado;
 
     public PanelAbstracto() {
         this.gestorPaneles = GestorPaneles.getInstance();
@@ -18,6 +19,12 @@ public abstract class PanelAbstracto extends JPanel {
     }
 
     public abstract void iniciarPanel();
+
+    public final void iniciarSiHaceFalta() {
+        if (iniciado) { return; }
+        iniciado = true;
+        iniciarPanel();
+    }
 
     public JButton agregarBoton(String texto) {
         JButton b = new JButton(texto);
@@ -80,6 +87,15 @@ public abstract class PanelAbstracto extends JPanel {
         return campoTexto;
     }
 
+    public JPasswordField agregarCampoClave(String texto) {
+        JPasswordField campoClave = new JPasswordField();
+        campoClave.setFont(new Font("Arial", Font.PLAIN, 16));
+        campoClave.setToolTipText(texto);
+        campoClave.setEchoChar('\u2022');
+        campoClave.setMaximumSize(new Dimension(200, 30));
+        return campoClave;
+    }
+
     public JPanel agregarPanel(LayoutManager l) {
         JPanel p = new JPanel(l);
         p.setOpaque(false);
@@ -122,7 +138,6 @@ public abstract class PanelAbstracto extends JPanel {
         return comboBox;
     }
 
-
     protected void prepararContenido() {
         setLayout(new BorderLayout());
         setBackground(Color.BLACK);
@@ -131,38 +146,53 @@ public abstract class PanelAbstracto extends JPanel {
         contenidoPanel.setBackground(Color.BLACK);
     }
 
-    public GridBagConstraints crearGbc(int x, int y) {
+    public GridBagConstraints getGBC(int x, int y, int width, int height) {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = x;
         gbc.gridy = y;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.gridwidth = width;
+        gbc.gridheight = height;
         return gbc;
     }
 
-    public GridBagConstraints agregarGbc(int x, int y, int ancho, int alto) {
-        GridBagConstraints gbc = crearGbc(x, y);
-        gbc.gridwidth = ancho;
-        gbc.gridheight = alto;
-        return gbc;
+    protected void mostrarPanelTexto(String texto, JPanel panel) {
+        PanelTexto panelTexto = new PanelTexto(texto, () -> gestorPaneles.mostrarPanel(panel));
+        gestorPaneles.mostrarPanel(panelTexto);
     }
 
-    public GridBagConstraints agregarGbc(int x, int y, int ancho, int alto, int margin) {
-        GridBagConstraints gbc = agregarGbc(x, y, ancho, alto);
+    protected void mostrarPanelConfirmacion(PanelAbstracto panel, Runnable accionAceptar, String texto) {
+        PanelConfirmar panelConfirmacion = new PanelConfirmar(panel, accionAceptar, texto);
+        gestorPaneles.mostrarPanel(panelConfirmacion);
+    }
+
+    public GridBagConstraints getGBC(int x, int y, int width, int height, int margin) {
+        GridBagConstraints gbc = getGBC(x, y, width, height);
         gbc.insets = new Insets(margin, margin, margin, margin);
         return gbc;
     }
 
-    public void mostrarPanelTexto(String texto, PanelAbstracto siguientePanel) {
-        PanelTexto panel = new PanelTexto(texto, () -> gestorPaneles.mostrarPanel(siguientePanel));
-        gestorPaneles.mostrarPanel(panel);
+    public JPanel agregarPanelCuadrado(LayoutManager l, int margen, int ladoMinimo) {
+        JPanel p = new JPanel(l) {
+            @Override
+            public Dimension getPreferredSize() {
+                Container padre = getParent();
+                if (padre == null) {
+                    return new Dimension(ladoMinimo, ladoMinimo);
+                }
+                Insets in = padre.getInsets();
+                int ancho = padre.getWidth() - in.left - in.right - margen;
+                int alto = padre.getHeight() - in.top - in.bottom - margen;
+                int lado = Math.max(ladoMinimo, Math.min(ancho, alto));
+                return new Dimension(lado, lado);
+            }
+        };
+        p.setOpaque(false);
+        return p;
     }
 
-    public Color getColor(int r, int g, int b) {
-        return new Color(r, g, b);
+    public JPanel agregarPanelCentrador(Component hijo) {
+        JPanel p = agregarPanel(new GridBagLayout());
+        p.add(hijo);
+        return p;
     }
 }

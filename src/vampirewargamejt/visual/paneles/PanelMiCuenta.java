@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PanelMiCuenta extends PanelAbstracto {
-
     private JPanel menuPanel;
     private JPanel botonesPanel;
 
@@ -30,8 +29,8 @@ public class PanelMiCuenta extends PanelAbstracto {
         botonesPanel.add(agregarBoton("Ver mi información", () -> gestorPaneles.mostrarPanel(new PanelMiInformacion())));
         botonesPanel.add(agregarBoton("Cambiar contraseña", () -> gestorPaneles.mostrarPanel(new PanelCambiarClave())));
         botonesPanel.add(agregarBoton("Cerrar mi cuenta", () -> {
-            gestorPaneles.mostrarPanel(new PanelInicio());
             gestorUsuarios.cerrarCuenta();
+            gestorPaneles.mostrarPanel(new PanelInicio());
         }));
         botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelMenuPrincipal())));
     }

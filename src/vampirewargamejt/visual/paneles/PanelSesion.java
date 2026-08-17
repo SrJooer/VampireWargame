@@ -4,13 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PanelSesion extends PanelAbstracto {
-
     private JPanel menuPanel;
     private JPanel formularioPanel;
     private JPanel botonesPanel;
 
     private JTextField nombreUsuario;
-    private JTextField clave;
+    private JPasswordField clave;
 
     @Override
     public void iniciarPanel() {
@@ -38,16 +37,16 @@ public class PanelSesion extends PanelAbstracto {
         nombreUsuario = agregarCampoTexto("Ingrese su nombre de usuario");
         formularioPanel.add(nombreUsuario);
         formularioPanel.add(agregarLabel("Clave:"));
-        clave = agregarCampoTexto("Ingrese su clave");
+        clave = agregarCampoClave("Ingrese su clave");
         formularioPanel.add(clave);
     }
-    
+
     private void prepararBotones() {
         botonesPanel = agregarPanel(new GridLayout(1, 2, 24, 12));
         botonesPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelInicio())));
         botonesPanel.add(agregarBoton("Iniciar sesión", () -> {
-            int response = gestorUsuarios.iniciarSesion(nombreUsuario.getText(), clave.getText());
+            int response = gestorUsuarios.iniciarSesion(nombreUsuario.getText(), new String(clave.getPassword()));
             showResponse(response);
         }));
     }

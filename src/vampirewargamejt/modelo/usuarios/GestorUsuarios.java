@@ -1,12 +1,12 @@
 package vampirewargamejt.modelo.usuarios;
 
-import java.util.ArrayList;
+import vampirewargamejt.modelo.almacen.Almacen;
+import vampirewargamejt.modelo.almacen.AlmacenArreglo;
 
 public class GestorUsuarios {
-
     private static GestorUsuarios instancia;
 
-    private ArrayList<Usuario> usuarios = new ArrayList<>();
+    private final Almacen<Usuario> usuarios = new AlmacenArreglo<>(Usuario.class);
     private Usuario usuarioActual;
     private Usuario usuarioContricante;
 
@@ -18,7 +18,6 @@ public class GestorUsuarios {
     }
 
     public int iniciarSesion(String nombre, String clave) {
-
         if (nombre == null || clave == null) {
             return 5;
         }
@@ -68,7 +67,6 @@ public class GestorUsuarios {
     }
 
     public int registrarUsuario(String nombre, String clave) {
-
         if (nombre == null || clave == null) {
             return 4;
         }
@@ -82,14 +80,14 @@ public class GestorUsuarios {
         }
 
         if (encontrarUsuario(nombre) == null) {
-            usuarios.add(new Usuario(nombre, clave));
+            usuarios.agregar(new Usuario(nombre, clave));
             return 1;
         }
         return 0;
     }
 
     public Usuario encontrarUsuario(String nombre) {
-        for (Usuario usuario : usuarios) {
+        for (Usuario usuario : usuarios.aArreglo()) {
             if (usuario.getNombre().equals(nombre)) {
                 return usuario;
             }
@@ -97,44 +95,30 @@ public class GestorUsuarios {
         return null;
     }
 
-    public String[] getUsuariosOrdenados(int cantidad) {
-        ArrayList<Usuario> usuariosActivos = new ArrayList<>();
-        for (Usuario usuario : usuarios) {
+    public Usuario[] getRanking() {
+        Almacen<Usuario> activos = new AlmacenArreglo<>(Usuario.class);
+        for (Usuario usuario : usuarios.aArreglo()) {
             if (usuario.isActivo()) {
-                usuariosActivos.add(usuario);
+                activos.agregar(usuario);
             }
         }
 
-        ordenarRecursivo(usuariosActivos, 0, usuariosActivos.size() - 1);
-
-        String[] resultado = new String[cantidad];
-
-        for (int i = 0; i < cantidad; i++) {
-            if (i < usuariosActivos.size()) {
-                Usuario usuario = usuariosActivos.get(i);
-                resultado[i] = usuario.getNombre() + " - " + usuario.getPuntos() + " puntos";
-            } else {
-                resultado[i] = " -- jugador null --";
-            }
-        }
-        return resultado;
+        Usuario[] ranking = activos.aArreglo();
+        ordenarRecursivo(ranking, 0, ranking.length - 1);
+        return ranking;
     }
 
     public String[] obtenerJugadoresDisponibles() {
-        ArrayList<Usuario> jugadoresDisponibles = new ArrayList<>();
-        for (Usuario usuario : usuarios) {
+        Almacen<String> disponibles = new AlmacenArreglo<>(String.class);
+        for (Usuario usuario : usuarios.aArreglo()) {
             if (usuario.isActivo() && usuario != usuarioActual) {
-                jugadoresDisponibles.add(usuario);
+                disponibles.agregar(usuario.getNombre());
             }
         }
-        String[] resultado = new String[jugadoresDisponibles.size()];
-        for (int i = 0; i < jugadoresDisponibles.size(); i++) {
-            resultado[i] = jugadoresDisponibles.get(i).getNombre();
-        }
-        return resultado;
+        return disponibles.aArreglo();
     }
 
-    private void ordenarRecursivo(ArrayList<Usuario> lista, int inicio, int fin) {
+    private void ordenarRecursivo(Usuario[] lista, int inicio, int fin) {
         if (inicio < fin) {
             int indicePivote = particion(lista, inicio, fin);
             ordenarRecursivo(lista, inicio, indicePivote - 1);
@@ -142,22 +126,22 @@ public class GestorUsuarios {
         }
     }
 
-    private int particion(ArrayList<Usuario> lista, int inicio, int fin) {
-        int pivote = lista.get(fin).getPuntos();
+    private int particion(Usuario[] lista, int inicio, int fin) {
+        int pivote = lista[fin].getPuntos();
         int i = inicio - 1;
 
         for (int j = inicio; j < fin; j++) {
-            if (lista.get(j).getPuntos() > pivote) {
+            if (lista[j].getPuntos() > pivote) {
                 i++;
-                Usuario temp = lista.get(i);
-                lista.set(i, lista.get(j));
-                lista.set(j, temp);
+                Usuario temp = lista[i];
+                lista[i] = lista[j];
+                lista[j] = temp;
             }
         }
 
-        Usuario temp = lista.get(i + 1);
-        lista.set(i + 1, lista.get(fin));
-        lista.set(fin, temp);
+        Usuario temp = lista[i + 1];
+        lista[i + 1] = lista[fin];
+        lista[fin] = temp;
 
         return i + 1;
     }
