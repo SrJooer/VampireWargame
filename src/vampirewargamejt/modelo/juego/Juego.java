@@ -12,6 +12,8 @@ import vampirewargamejt.modelo.usuarios.Usuario;
 import vampirewargamejt.modelo.almacen.Almacen;
 import vampirewargamejt.modelo.almacen.AlmacenArreglo;
 
+import vampirewargamejt.modelo.excepciones.JugadaInvalidaException;
+
 public class Juego {
     private static final int PUNTOS_VICTORIA = 3;
 
@@ -102,16 +104,22 @@ public class Juego {
         return accionesPosibles(origen, destino).length > 0;
     }
 
-    public boolean jugar(Celda origen, Celda destino, Accion accion) {
-        if (juegoTerminado || !interactuable) { return false; }
-
-        boolean exito = ejecutar(origen, destino, accion);
-
-        if (exito) {
-            comprobarFinDelJuego();
-            if (!juegoTerminado) { pasarTurno(); }
+    public void jugar(Celda origen, Celda destino, Accion accion)
+            throws JugadaInvalidaException {
+        if (juegoTerminado) {
+            throw new JugadaInvalidaException("La partida ya terminó.");
         }
-        return exito;
+        if (!interactuable) {
+            throw new JugadaInvalidaException("Espera a que la ruleta se detenga.");
+        }
+        if (accion == null || !contiene(accionesPosibles(origen, destino), accion)) {
+            throw new JugadaInvalidaException("Esa acción no está permitida ahora mismo.");
+        }
+
+        ejecutar(origen, destino, accion);
+
+        comprobarFinDelJuego();
+        if (!juegoTerminado) { pasarTurno(); }
     }
 
     public void retirarse() {
@@ -123,19 +131,14 @@ public class Juego {
                 + nombre(queGana) + ", has ganado " + PUNTOS_VICTORIA + " puntos!");
     }
 
-    private boolean ejecutar(Celda origen, Celda destino, Accion accion) {
-        if (accion == null || !contiene(accionesPosibles(origen, destino), accion)) {
-            avisar("Esa acción no está permitida ahora mismo");
-            return false;
-        }
-
+    private void ejecutar(Celda origen, Celda destino, Accion accion) {
         if (accion == Accion.MOVER) {
-            return mover(origen, destino);
+            mover(origen, destino);
+        } else if (accion == Accion.INVOCAR) {
+            invocar(origen, destino);
+        } else {
+            atacar(origen, destino, accion);
         }
-        if (accion == Accion.INVOCAR) {
-            return invocar(origen, destino);
-        }
-        return atacar(origen, destino, accion);
     }
 
     private boolean contiene(Accion[] acciones, Accion buscada) {
@@ -145,22 +148,20 @@ public class Juego {
         return false;
     }
 
-    private boolean mover(Celda origen, Celda destino) {
+    private void mover(Celda origen, Celda destino) {
         Ficha ficha = origen.getFicha();
         origen.removeFicha();
         destino.setFicha(ficha);
 
         registrar(nombre(getJugadorEnTurno()) + " movio su " + ficha.getNombre()
                 + " de " + pos(origen) + " a " + pos(destino) + ".");
-        return true;
     }
 
-    private boolean invocar(Celda origen, Celda destino) {
+    private void invocar(Celda origen, Celda destino) {
         destino.setFicha(new FichaZombie(jugador1Turno, origen.getFicha()));
 
         registrar(nombre(getJugadorEnTurno()) + " invocó un Zombie en " + pos(destino)
                 + " con su Muerte de " + pos(origen) + ".");
-        return true;
     }
 
     private void retirarZombiesDe(Ficha invocador) {
@@ -176,7 +177,7 @@ public class Juego {
         }
     }
 
-    private boolean atacar(Celda origen, Celda destino, Accion accion) {
+    private void atacar(Celda origen, Celda destino, Accion accion) {
         Ficha atacante = origen.getFicha();
         Ficha defensora = destino.getFicha();
 
@@ -207,7 +208,6 @@ public class Juego {
                     + defensora.getEscudo() + " puntos de escudo y "
                     + defensora.getVida() + " de vida.");
         }
-        return true;
     }
 
     private void robarVida(Ficha atacante, Accion accion, Celda origen) {
@@ -313,10 +313,6 @@ public class Juego {
 
     private void registrar(String texto) {
         historial.agregar(texto);
-        ultimoMensaje = texto;
-    }
-
-    private void avisar(String texto) {
         ultimoMensaje = texto;
     }
 

@@ -5,6 +5,7 @@ import vampirewargamejt.modelo.juego.tablero.Celda;
 import vampirewargamejt.modelo.juego.tablero.fichas.Accion;
 import vampirewargamejt.modelo.juego.tablero.fichas.Ficha;
 import vampirewargamejt.modelo.usuarios.Usuario;
+import vampirewargamejt.modelo.excepciones.JugadaInvalidaException;
 import vampirewargamejt.visual.componentes.CargadorAssets;
 import vampirewargamejt.visual.componentes.CasillaBoton;
 import vampirewargamejt.visual.componentes.DialogoAccion;
@@ -42,6 +43,7 @@ public class PanelJuego extends PanelAbstracto {
     private JLabel labelRuleta;
     private JLabel labelMensaje;
     private JLabel labelGiros;
+    private JLabel labelEstadoRuleta;
     private JTextArea areaHistorial;
     private RuletaPanel ruleta;
     private JButton botonDetener;
@@ -165,12 +167,17 @@ public class PanelJuego extends PanelAbstracto {
         panel.add(ruleta, BorderLayout.CENTER);
 
         labelGiros = agregarLabel("");
+        labelGiros.setFont(new Font("Arial", Font.BOLD, 15));
+
+        labelEstadoRuleta = agregarLabel("");
+        labelEstadoRuleta.setFont(new Font("Arial", Font.PLAIN, 14));
 
         botonDetener = agregarBoton("Detener", this::detenerRuleta);
         botonDetener.setEnabled(false);
 
-        JPanel pie = agregarPanel(new GridLayout(2, 1, 0, 6));
+        JPanel pie = agregarPanel(new GridLayout(3, 1, 0, 4));
         pie.add(labelGiros);
+        pie.add(labelEstadoRuleta);
         pie.add(botonDetener);
         panel.add(pie, BorderLayout.SOUTH);
 
@@ -356,7 +363,15 @@ public class PanelJuego extends PanelAbstracto {
             return;
         }
 
-        juego.jugar(origen, destino, elegida);
+        try {
+            juego.jugar(origen, destino, elegida);
+        } catch (JugadaInvalidaException e) {
+            avisar(e.getMessage());
+            origenSeleccionado = null;
+            redibujar();
+            return;
+        }
+
         origenSeleccionado = null;
         redibujar();
 
@@ -508,11 +523,12 @@ public class PanelJuego extends PanelAbstracto {
 
         if (juego.isJuegoTerminado()) {
             labelGiros.setText("");
-        } else if (ruletaGirando) {
-            labelGiros.setText("Girando...");
+            labelEstadoRuleta.setText("");
         } else {
-            labelGiros.setText("Oportunidades: " + juego.getGirosRestantes()
-                    + " de " + juego.getGirosDelTurno());
+            int total = juego.getGirosDelTurno();
+            int usados = total - juego.getGirosRestantes();
+            labelGiros.setText("Giro " + usados + " de " + total);
+            labelEstadoRuleta.setText(ruletaGirando ? "Girando..." : "Detenida");
         }
 
         if (botonDetener != null) {

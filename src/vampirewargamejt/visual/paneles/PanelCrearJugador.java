@@ -1,5 +1,7 @@
 package vampirewargamejt.visual.paneles;
 
+import vampirewargamejt.modelo.excepciones.VampireWargameException;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -45,23 +47,19 @@ public class PanelCrearJugador extends PanelAbstracto {
         botonesPanel = agregarPanel(new GridLayout(1, 2, 24, 12));
         botonesPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelInicio())));
-        botonesPanel.add(agregarBoton("Crear Jugador", () -> {
-            String nombre = nombreUsuario.getText();
-            String clave = new String(this.clave.getPassword());
-            int response = gestorUsuarios.registrarUsuario(nombre, clave);
-            showResponse(response, nombre, clave);
-        }));
+        botonesPanel.add(agregarBoton("Crear Jugador", this::intentarCrearJugador));
     }
 
-    private void showResponse(int response, String nombre, String clave) {
-        switch (response) {
-            case 4, 3 -> mostrarPanelTexto("Rellene todos los campos", new PanelInicio());
-            case 2 -> mostrarPanelTexto("La clave debe tener 5 caracteres", new PanelInicio());
-            case 1 ->  {
-                gestorUsuarios.iniciarSesion(nombre, clave);
-                gestorPaneles.mostrarPanel(new PanelMenuPrincipal());
-            }
-            case 0 -> mostrarPanelTexto("El usuario ya existe", new PanelInicio());
+    private void intentarCrearJugador() {
+        String nombre = nombreUsuario.getText();
+        String textoClave = new String(clave.getPassword());
+
+        try {
+            gestorUsuarios.registrarUsuario(nombre, textoClave);
+            gestorUsuarios.iniciarSesion(nombre, textoClave);
+            gestorPaneles.mostrarPanel(new PanelMenuPrincipal());
+        } catch (VampireWargameException e) {
+            mostrarPanelTexto(e.getMessage(), new PanelInicio());
         }
     }
 }

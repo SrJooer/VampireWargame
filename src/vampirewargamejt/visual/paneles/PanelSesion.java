@@ -1,5 +1,7 @@
 package vampirewargamejt.visual.paneles;
 
+import vampirewargamejt.modelo.excepciones.VampireWargameException;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -45,19 +47,16 @@ public class PanelSesion extends PanelAbstracto {
         botonesPanel = agregarPanel(new GridLayout(1, 2, 24, 12));
         botonesPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelInicio())));
-        botonesPanel.add(agregarBoton("Iniciar sesión", () -> {
-            int response = gestorUsuarios.iniciarSesion(nombreUsuario.getText(), new String(clave.getPassword()));
-            showResponse(response);
-        }));
+        botonesPanel.add(agregarBoton("Iniciar sesión", this::intentarIniciarSesion));
     }
 
-    private void showResponse(int response) {
-        switch (response) {
-            case 5,4 -> mostrarPanelTexto("Rellene todos los campos", new PanelInicio());
-            case 3 -> mostrarPanelTexto("Usuario desactivado", new PanelInicio());
-            case 2 -> gestorPaneles.mostrarPanel(new PanelMenuPrincipal());
-            case 1, 0 -> mostrarPanelTexto("Usuario o clave incorrectos", new PanelInicio());
-            default -> mostrarPanelTexto("Error desconocido", new PanelInicio());
+    private void intentarIniciarSesion() {
+        try {
+            gestorUsuarios.iniciarSesion(nombreUsuario.getText(),
+                    new String(clave.getPassword()));
+            gestorPaneles.mostrarPanel(new PanelMenuPrincipal());
+        } catch (VampireWargameException e) {
+            mostrarPanelTexto(e.getMessage(), new PanelInicio());
         }
     }
 }

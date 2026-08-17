@@ -1,5 +1,7 @@
 package vampirewargamejt.visual.paneles;
 
+import vampirewargamejt.modelo.excepciones.VampireWargameException;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -41,25 +43,15 @@ public class PanelCambiarClave extends PanelAbstracto {
     private void prepararBotones() {
         botonesPanel = agregarPanel(new GridLayout(1, 2, 24, 12));
         botonesPanel.add(agregarBoton("Volver", () -> gestorPaneles.mostrarPanel(new PanelMiCuenta())));
-        botonesPanel.add(agregarBoton("Cambiar", () -> {
-            mostrarRepuesta(gestorUsuarios.cambiarClave(new String(nuevaClave.getPassword())));
-        }));
+        botonesPanel.add(agregarBoton("Cambiar", this::intentarCambiarClave));
     }
 
-    private void mostrarRepuesta(int repuesta) {
-        switch (repuesta) {
-            case 1:
-                mostrarPanelTexto("Error al cambiar la contraseña.", new PanelMiCuenta());
-                break;
-            case 2:
-                mostrarPanelTexto("Contraseña cambiada con éxito.", new PanelMiCuenta());
-                break;
-            case 3:
-                mostrarPanelTexto("La nueva contraseña debe tener exactamente 5 caracteres.", new PanelMiCuenta());
-                break;
-            case 4:
-                mostrarPanelTexto("La nueva contraseña no puede estar vacía.", new PanelMiCuenta());
-                break;
+    private void intentarCambiarClave() {
+        try {
+            gestorUsuarios.cambiarClave(new String(nuevaClave.getPassword()));
+            mostrarPanelTexto("Contraseña cambiada con éxito.", new PanelMiCuenta());
+        } catch (VampireWargameException e) {
+            mostrarPanelTexto(e.getMessage(), new PanelMiCuenta());
         }
     }
 }

@@ -3,7 +3,13 @@ package vampirewargamejt.modelo.usuarios;
 import vampirewargamejt.modelo.almacen.Almacen;
 import vampirewargamejt.modelo.almacen.AlmacenArreglo;
 
+import vampirewargamejt.modelo.excepciones.CredencialesInvalidasException;
+import vampirewargamejt.modelo.excepciones.DatosInvalidosException;
+import vampirewargamejt.modelo.excepciones.UsuarioDuplicadoException;
+
 public class GestorUsuarios {
+    private static final int LARGO_CLAVE = 5;
+
     private static GestorUsuarios instancia;
 
     private final Almacen<Usuario> usuarios = new AlmacenArreglo<>(Usuario.class);
@@ -17,42 +23,36 @@ public class GestorUsuarios {
         return instancia;
     }
 
-    public int iniciarSesion(String nombre, String clave) {
-        if (nombre == null || clave == null) {
-            return 5;
-        }
-
-        if (nombre.isEmpty() || clave.isEmpty()) {
-            return 4;
-        }
+    public void iniciarSesion(String nombre, String clave)
+            throws DatosInvalidosException, CredencialesInvalidasException {
+        exigirTexto(nombre, "Rellene todos los campos");
+        exigirTexto(clave, "Rellene todos los campos");
 
         Usuario usuario = encontrarUsuario(nombre);
 
-        if (usuario != null) {
-            if (!usuario.isActivo()) {
-                return 3;
-            }
-            if (usuario.getClave().equals(clave)) {
-                usuarioActual = usuario;
-                return 2;
-            }
-            return 1;
+        if (usuario == null) {
+            throw new CredencialesInvalidasException("Usuario o clave incorrectos");
         }
-        return 0;
+        if (!usuario.isActivo()) {
+            throw new CredencialesInvalidasException("Usuario desactivado");
+        }
+        if (!usuario.getClave().equals(clave)) {
+            throw new CredencialesInvalidasException("Usuario o clave incorrectos");
+        }
+
+        usuarioActual = usuario;
     }
 
-    public int cambiarClave(String nuevaClave) {
-        if (nuevaClave == null || nuevaClave.isEmpty()) {
-            return 4;
+    public void cambiarClave(String nuevaClave)
+            throws DatosInvalidosException, CredencialesInvalidasException {
+        exigirTexto(nuevaClave, "La nueva contraseña no puede estar vacía.");
+        exigirLargoDeClave(nuevaClave, "La nueva contraseña debe tener exactamente "
+                + LARGO_CLAVE + " caracteres.");
+
+        if (usuarioActual == null) {
+            throw new CredencialesInvalidasException("Error al cambiar la contraseña.");
         }
-        if (nuevaClave.length() != 5) {
-            return 3;
-        }
-        if (usuarioActual != null) {
-            usuarioActual.setClave(nuevaClave);
-            return 2;
-        }
-        return 1;
+        usuarioActual.setClave(nuevaClave);
     }
 
     public void cerrarCuenta() {
@@ -66,24 +66,29 @@ public class GestorUsuarios {
         usuarioActual = null;
     }
 
-    public int registrarUsuario(String nombre, String clave) {
-        if (nombre == null || clave == null) {
-            return 4;
-        }
+    public void registrarUsuario(String nombre, String clave)
+            throws DatosInvalidosException, UsuarioDuplicadoException {
+        exigirTexto(nombre, "Rellene todos los campos");
+        exigirTexto(clave, "Rellene todos los campos");
+        exigirLargoDeClave(clave, "La clave debe tener " + LARGO_CLAVE + " caracteres");
 
-        if (nombre.isEmpty() || clave.isEmpty()) {
-            return 3;
+        if (encontrarUsuario(nombre) != null) {
+            throw new UsuarioDuplicadoException("El usuario ya existe");
         }
+        usuarios.agregar(new Usuario(nombre, clave));
+    }
 
-        if (clave.length() != 5) {
-            return 2;
+    private void exigirTexto(String valor, String mensaje) throws DatosInvalidosException {
+        if (valor == null || valor.isEmpty()) {
+            throw new DatosInvalidosException(mensaje);
         }
+    }
 
-        if (encontrarUsuario(nombre) == null) {
-            usuarios.agregar(new Usuario(nombre, clave));
-            return 1;
+    private void exigirLargoDeClave(String clave, String mensaje)
+            throws DatosInvalidosException {
+        if (clave.length() != LARGO_CLAVE) {
+            throw new DatosInvalidosException(mensaje);
         }
-        return 0;
     }
 
     public Usuario encontrarUsuario(String nombre) {
